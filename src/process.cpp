@@ -5,29 +5,54 @@
 #include <vector>
 
 #include "process.h"
+#include "linux_parser.h"
 
 using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
-int Process::Pid() { return 0; }
+Process::Process(int pid): pid_(pid) {};
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+// Return this process's ID
+int Process::Pid() const { return pid_; }
 
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+float Process::CpuUtilization() const { return cpu_; }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+// Return this process's CPU utilization
+void Process::CpuUtilization(long active_jiffs, long jiffs) { 
+    long diff_active_jiffs = active_jiffs - prev_active_jiffs;
+    long diff_jiffs = jiffs - prev_jiffs;
+    cpu_ = static_cast<float>(diff_active_jiffs) / diff_jiffs;
+    prev_active_jiffs = active_jiffs;
+    prev_jiffs = jiffs;
+}
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+// Return the command that generated this process
+string Process::Command() const { 
+    return LinuxParser::Command(Pid()); 
+}
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+// Return this process's memory utilization
+string Process::Ram() const { 
+    return LinuxParser::Ram(Pid()); 
+}
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+// Return the user (name) that generated this process
+string Process::User() const { 
+    return LinuxParser::User(Pid()); 
+}
+
+// Return the age of this process (in seconds)
+long int Process::UpTime() const { 
+    return LinuxParser::UpTime(Pid()); 
+}
+
+// Overload the "less than" comparison operator for Process objects
+bool Process::operator<(Process const& a) const { 
+    return CpuUtilization() < a.CpuUtilization(); 
+}
+
+// Overload the "greater than" comparison operator for Process objects
+bool Process::operator>(Process const& a) const { 
+    return CpuUtilization() > a.CpuUtilization(); 
+}
