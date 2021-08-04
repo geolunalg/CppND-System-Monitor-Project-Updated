@@ -21,7 +21,7 @@ Processor& System::Cpu() { return cpu_; }
 vector<Process>& System::Processes() { 
     /*
     * Borrow solution for this function from David Silver
-    * https://github.com/udacity/CppND-System-Monitor-Project-Updated/blob/916dd64116b35b94ccebea3cdf1dadb56d2a4114/src/process.cpp#L16
+    * https://github.com/udacity/CppND-System-Monitor-Project-Updated/blob/916dd64116b35b94ccebea3cdf1dadb56d2a4114/src/system.cpp#L22
     */
     vector<int> pids = LinuxParser::Pids();
 
