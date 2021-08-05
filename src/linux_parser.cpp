@@ -304,7 +304,7 @@ long LinuxParser::UpTime(int pid) {
     int i = 1;
     while(lstream >> value) {
       if(i == 22) {
-        up_time = stol(value) / sysconf(_SC_CLK_TCK);
+        up_time = UpTime() - stol(value) / sysconf(_SC_CLK_TCK);
         break;
       }
       i++;
